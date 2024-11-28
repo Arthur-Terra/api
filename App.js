@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import TaskCard from './TaskCard';
-import { useState, useEffect} from 'react';
-import { getRequest } from './api/Api';
+import { useState, useEffect } from 'react';
+import { getRequest, deleteRequest, postRequest } from './api/Api';
 
 export default function App() {
 
@@ -12,21 +12,16 @@ export default function App() {
   const [alert1, setAlert1] = useState(false);
   const [alert2, setAlert2] = useState(false);
 
-  const onMessage = () => {
+  const onMessage = async () => {
     setAlert1(false);
     setAlert2(false);
 
     if (taskTitle !== "" && taskDescription.length >= 10) {
-      setTask([
-        ...task, {
-          id: task.length + 1,
-          title: taskTitle,
-          description: taskDescription
-        }
-      ]);
+      let newTask = await postRequest(taskTitle, taskDescription);
+      setTask(newTask)
 
-      setTaskTitle("");  
-      setTaskDescription("");  
+      setTaskTitle("");
+      setTaskDescription("");
     } else {
       if (!taskTitle.trim()) {
         setAlert1(true);
@@ -44,29 +39,32 @@ export default function App() {
     }
   };
 
-  const deleteTask = (index) => {
+  const deleteTask = (index, id) => {
     const updateTasks = [...task];
-    updateTasks.splice(index, 1);  
+    updateTasks.splice(index, 1);
+    deleteRequest(id);
     setTask(updateTasks);
   };
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-       const resp = await getRequest();
-       setTask(resp)
-    }catch (ex) {
-      console.error(ex)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resp = await getRequest();
+        setTask(resp)
+      } catch (ex) {
+        console.error(ex)
+      }
     }
-  }
-}, [])
+
+    fetchData()
+  }, [])
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Titulo da tarefa</Text>
-      <TextInput 
-        placeholder='Nome da tarefa' 
-        style={styles.input} 
-        value={taskTitle} 
-        onChangeText={setTaskTitle}  
+      <TextInput
+        placeholder='Nome da tarefa'
+        style={styles.input}
+        value={taskTitle}
+        onChangeText={setTaskTitle}
       />
 
       <Text style={styles.label}>Tarefa Descrição</Text>
@@ -75,7 +73,7 @@ useEffect(() => {
         placeholder='Descrição da tarefa'
         multiline
         value={taskDescription}
-        onChangeText={setTaskDescription}  
+        onChangeText={setTaskDescription}
       />
 
       {alert1 && (
@@ -91,7 +89,7 @@ useEffect(() => {
       )}
 
       <View style={styles.buttonContainer}>
-        <Button 
+        <Button
           title='Salvar'
           style={styles.buttonGreen}
           color='darkgreen'
@@ -104,11 +102,11 @@ useEffect(() => {
       <ScrollView>
         {task.map((item, index) => (
           <TaskCard
-            key={item.id}  
-            title={item.title}  
-            desc={item.description}  
-            status={"Done"}  
-            onClick={() => deleteTask(index)}  
+            key={item.id}
+            title={item.title}
+            desc={item.description}
+            status={"Done"}
+            onClick={() => deleteTask(index, item.id)}
           />
         ))}
       </ScrollView>

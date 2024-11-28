@@ -1,4 +1,4 @@
-import { CircleCheck } from "lucide-react-native"; 
+import { CircleCheck } from "lucide-react-native";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 const TaskCard = ({ title, desc, status, onClick }) => {
@@ -14,9 +14,9 @@ const TaskCard = ({ title, desc, status, onClick }) => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={onClick}>
-                    <Text style={styles.buttonText}>
-                        {status === "Done" ? 'Deletar' : 'Check'}
-                    </Text>
+                <Text style={styles.buttonText}>
+                    {status === "Done" ? 'Deletar' : 'Check'}
+                </Text>
             </TouchableOpacity>
         </View>
     );
@@ -24,7 +24,7 @@ const TaskCard = ({ title, desc, status, onClick }) => {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#fff',  
+        backgroundColor: '#fff',
         padding: 15,
         borderRadius: 10,
         shadowColor: '#000',
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         elevation: 3,
         marginVertical: 10
     },
-    
+
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase'
     },
     description: {
-        fontSize: 14,  
+        fontSize: 14,
         color: '#666',
         marginBottom: 10
     },
